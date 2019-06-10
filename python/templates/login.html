@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% block content %}
+    <div class="center">
+
+        <font color="red"> {{error}} </font>
+
+        <form action="/signin" method="post" enctype="multipart/form-data">
+            Username: <input type="text" name="username"/><br/>
+            Password: <input type="password" name="password"/>
+            <input type="submit" value="Login"/>
+        </form>
+
+    </div>
+{% endblock %}

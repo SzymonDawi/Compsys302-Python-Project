@@ -1,0 +1,13 @@
+{% extends "main.html" %}
+{% block content %}
+    <div class="center">
+
+        <font color="red"> This is not the same as your login server password </font>
+
+        <form action="/signin" method="post" enctype="multipart/form-data">
+            private_data_password: <input type="text" name="private_data_password"/><br/>
+            <input type="submit" value="Login"/>
+        </form>
+
+    </div>
+{% endblock %}
