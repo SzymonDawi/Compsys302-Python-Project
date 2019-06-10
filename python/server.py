@@ -232,7 +232,7 @@ class MainApp(object):
                 cherrypy.session['privatedata'] = get_privatedata()
                 cherrypy.session['blocked_broadcast']= []
                 cherrypy.session['status'] = 'online'
-                cherrypy.session['messaging'] = 0
+                cherrypy.session['count'] = 0
                 if cherrypy.session['privatedata']['response'] == "ok":
                     raise cherrypy.HTTPRedirect('/privatedata_password2')
                 else:
@@ -288,9 +288,13 @@ class MainApp(object):
             print(status)
             print(cherrypy.session['status'])
             cherrypy.session['status'] = status
-
-        refresh()
-
+        if(cherrypy.session['count']<= 3):
+            cherrypy.session['count'] += 1
+        else:
+            cherrypy.session['count'] = 0
+        
+        refresh(cherrypy.session['count'])
+       
         print(cherrypy.session['status'])
         return tmpl.render(user_status=cherrypy.session['status'], user=cherrypy.session['username'],
                 users_online=cherrypy.session['users_online'][0], status=cherrypy.session['users_online'][1], post=read_posts(),
@@ -313,7 +317,12 @@ class MainApp(object):
         tmpl = env.get_template('messages.html')
         cherrypy.session['person'] = person
         cherrypy.session['status'] = status
-        refresh()
+        if(cherrypy.session['count']<= 3):
+            cherrypy.session['count'] += 1
+        else:
+            cherrypy.session['count'] = 0
+        
+        refresh(cherrypy.session['count'])
         return tmpl.render(user_status=cherrypy.session['status'], user=cherrypy.session['username'],
                            users_online=cherrypy.session['users_online'][0], status=cherrypy.session['users_online'][1],
                            post=read_private_messages(),posts_blocking=cherrypy.session['private_posts_blocking'],
@@ -651,12 +660,8 @@ def get_lgoinserver_pubkey():
 
     return send(url, payload,5)['pubkey']
 
-def refresh(count = 0, count2 = 0):
-    if(count <= 3):
-        count += 1
-        count2 += 1
-    else:
-        count = 0
+def refresh(count):
+    
     
     if(count==3):
 
@@ -672,8 +677,7 @@ def refresh(count = 0, count2 = 0):
     #send_privatemessage('0252660c6d8899959d2d10a53000e0526353b9d93d3c944f47ef9d20e05e3a58', 'ewon466', 'test')
 
     #send_privatemessage('dc60319e65f667f0813ca5f561423d09f6c5e0bf4b3a2a720f9e37935d899094','jchu491','hello')
-    if(count2 == 3):
-        count2=0
+    if(count == 3):
         print('--------------------------health check-----------------------------')
         for i in range(len(cherrypy.session['users_online'][3])):
             try:
@@ -681,7 +685,6 @@ def refresh(count = 0, count2 = 0):
                 print("yay " + cherrypy.session['users_online'][0][i] + " " + cherrypy.session['users_online'][3][i])
             except:
                 print("rip "+ cherrypy.session['users_online'][0][i] +cherrypy.session['users_online'][3][i])
-
 
 
 def add_privatedata(privatedata):
@@ -932,7 +935,7 @@ def read_private_messages():
             if(target_username == cherrypy.session['username']):
                 name = cherrypy.session['users_online'][0][int(cherrypy.session['person'])]                
             else:  
-                name = "Me:"
+                name = "Me:"	
             try:
                 time_sent =time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(float(time_sent)))
                 unseal_box= SealedBox(cherrypy.session['signing_key'].to_curve25519_private_key())
