@@ -9,3 +9,4 @@ to run follow these steps:
 6. go to: 0.0.0.0:10000
 
 This code works with: ewon466, jchu491
+Please ignore the python folder
