@@ -1,0 +1,89 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block posts %}
+    <ul class="h-100 list-group " >
+        <li class="list-group-item align-items-center">
+            <form action="/post_private_message?status={{user_status}}" method="post">
+                <div  class="form-group">
+                    <label for="exampleFormControlTextarea1">Send message to {{person}}</label>
+                    <textarea name="message" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Post</button>
+            </form>
+        </li>
+
+        {% for i in range(10)%}
+            <li class="list-group-item">
+
+                <p class="text-break">
+                    {% if post[3][i] == '0'%}
+                        {{post[0][i]}}<br>
+                        {{post[1][i]}}<br>
+                        {{post[2][i]}}<br>
+                        <!--<a href="/post_message?message=!Meta:favourite_broadcast:{{post[6][i]}}" >
+                            <button class="btn-sm btn-primary" type="submit">
+                                Favourite
+                            </button>
+                        </a>
+
+                        <a href="/post_message?message=!Meta:block_broadcast:{{post[6][i]}}" >
+                            <button class="btn-sm btn-danger" type="submit">
+                                Block
+                            </button>
+                        </a>-->
+                    {% elif post[3][i] == '1'%}
+                       <font color="red"> <h4> This post was blocked by you</h4> </font>
+                    {% else %}
+                        <h4>{{post[0][i]}}<br></h4>
+                            &nbsp&nbsp&nbsp{{post[3][i]}}<br>
+                            &nbsp&nbsp&nbsp{{post[4][i]}}<br>
+                            &nbsp&nbsp&nbsp{{post[5][i]}}<br>
+                        <h4>{{post[2][i]}}<br></h4>
+                    {% endif %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block aside %}
+    <ul class="h-75 sticky-top list-group">
+                <div class="overflow-auto">
+                    {% for i in range(users_online|length) %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{users_online[i]}}
+                            {% if status[i] == 'online'%}
+                                <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Online">
+                                    <h4><span class="badge badge-primary badge-pill">-</span></h4>
+                                </span>
+                            {% elif status[i] == 'busy'%}
+                                <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Busy">
+                                    <h5><span class="badge badge-danger badge-pill">-</span></h5>
+                                </span>
+                            {% elif status[i] == 'away'%}
+                                <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="away">
+                                    <h5><span class="badge badge-warning badge-pill">-</span></h5>
+                                </span>
+                            {% else %}
+                                <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="Offline">
+                                    <h5><span class="badge badge-secondary badge-pill">-</span></h5>
+                                </span>
+                            {% endif %}
+                            <a href="/private_messages?status={{user_status}}&person={{i}}"  >
+                                <button class="btn-sm btn-primary" type="submit">
+                                    Message
+                                </button>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </div>
+            </ul>
+{% endblock%}
+
+{%block message_person%}
+
+{%endblock%}

@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block posts %}
+
+    <ul class="h-100 list-group " >
+
+        {% for i in range(10)%}
+            <li class="list-group-item ">
+
+                <p class="text-break">
+                    {{post[0][i]}}<br>
+                    {{post[1][i]}}<br>
+                    {{post[2][i]}}<br>
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+
+    </script>
+
+{% endblock %}
