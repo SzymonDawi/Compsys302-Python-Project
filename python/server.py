@@ -282,23 +282,26 @@ class MainApp(object):
 
     @cherrypy.expose
     def posts(self, status = 'online'):
-        tmpl = env.get_template('posts.html')
+        try:
+            tmpl = env.get_template('posts.html')
 
-        if(cherrypy.session['status'] != status):
-            print(status)
-            print(cherrypy.session['status'])
-            cherrypy.session['status'] = status
-        if(cherrypy.session['count']<= 3):
-            cherrypy.session['count'] += 1
-        else:
-            cherrypy.session['count'] = 0
+            if(cherrypy.session['status'] != status):
+                print(status)
+                print(cherrypy.session['status'])
+                cherrypy.session['status'] = status
+            if(cherrypy.session['count']<= 3):
+               cherrypy.session['count'] += 1
+            else:
+               cherrypy.session['count'] = 0
         
-        refresh(cherrypy.session['count'])
+            refresh(cherrypy.session['count'])
        
-        print(cherrypy.session['status'])
-        return tmpl.render(user_status=cherrypy.session['status'], user=cherrypy.session['username'],
+            print(cherrypy.session['status'])
+            return tmpl.render(user_status=cherrypy.session['status'], user=cherrypy.session['username'],
                 users_online=cherrypy.session['users_online'][0], status=cherrypy.session['users_online'][1], post=read_posts(),
                            posts_blocking=cherrypy.session['posts_blocking'],current_url=("posts"),refresh =1)
+        except:
+            raise cherrypy.HTTPRedirect('/')
 
     @cherrypy.expose
     def post_message(self, message='0',key='0'):
@@ -672,12 +675,6 @@ def refresh(count):
         #ping()
         list_users()
         get_loginserver_record()
-    
-
-    #send_privatemessage('0252660c6d8899959d2d10a53000e0526353b9d93d3c944f47ef9d20e05e3a58', 'ewon466', 'test')
-
-    #send_privatemessage('dc60319e65f667f0813ca5f561423d09f6c5e0bf4b3a2a720f9e37935d899094','jchu491','hello')
-    if(count == 3):
         print('--------------------------health check-----------------------------')
         for i in range(len(cherrypy.session['users_online'][3])):
             try:
@@ -685,6 +682,11 @@ def refresh(count):
                 print("yay " + cherrypy.session['users_online'][0][i] + " " + cherrypy.session['users_online'][3][i])
             except:
                 print("rip "+ cherrypy.session['users_online'][0][i] +cherrypy.session['users_online'][3][i])
+    
+
+    #send_privatemessage('0252660c6d8899959d2d10a53000e0526353b9d93d3c944f47ef9d20e05e3a58', 'ewon466', 'test')
+
+    #send_privatemessage('dc60319e65f667f0813ca5f561423d09f6c5e0bf4b3a2a720f9e37935d899094','jchu491','hello')
 
 
 def add_privatedata(privatedata):
