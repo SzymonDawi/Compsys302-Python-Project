@@ -273,6 +273,8 @@ class MainApp(object):
         if username is None:
             pass
         else:
+            cherrypy.session['status']
+            report()
             cherrypy.lib.sessions.expire()
         raise cherrypy.HTTPRedirect('/')
 
@@ -466,7 +468,7 @@ def report():
     local_ip = str(socket.gethostbyname(socket.getfqdn())) +":10000"
     payload = {
         "connection_address": local_ip,
-        "connection_location": "2",
+        "connection_location": "0",
         "incoming_pubkey": cherrypy.session.get('pub_key'),
         "status": cherrypy.session['status']
     }
